@@ -1,23 +1,55 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import React, { useEffect, useState } from "react";
+import TemplateEditor from "./components/templateEditor";
+import SavedTemplates from "./components/savedTemplates";
+import "react-quill/dist/quill.snow.css";
 
 function App() {
+  const [token] = useState(
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2UzNTUxYjA4ZjdkNmE2MDZjNGZkNzgiLCJyb2xlIjoidXNlciIsImluc3RpdHV0ZSI6IkNvbGxlZ2Ugb2YgRW5naW5lZXJpbmciLCJ2ZXJzaW9uIjozLCJpYXQiOjE3NTE1MTAzMTgsImV4cCI6MTc1MTUxMzkxOH0.gJO-Mxyp1-veLeN9KFEHyF8U0tY56qzJ-fdvPN1Rgvo"
+  );
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+
+  const handleReuse = (tpl) => {
+    setSelectedTemplate(tpl);
+  };
+
+  useEffect(() => {
+    fetch("http://localhost:5004/api/templates", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Unauthorized");
+        return res.json();
+      })
+      .then((data) => console.log("Templates:", data))
+      .catch((err) => console.error("Fetch error:", err.message));
+  }, [token]);
+
+  const handleSave = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="max-w-4xl mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Email Template Builder</h1>
+      <TemplateEditor
+        onSave={handleSave}
+        token={token}
+        selectedTemplate={selectedTemplate}
+      />
+      <SavedTemplates
+        key={refreshKey}
+        token={token}
+        onUseTemplate={handleReuse}
+      />
     </div>
   );
 }
