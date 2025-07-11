@@ -87,20 +87,33 @@ const handleImageInsert = () => {
 const handleSendEmail = async () => {
   if (!recipient) return alert("Please enter a recipient email");
 
-    setSending(true);
-    try {
-      const res = await fetch("http://localhost:5004/api/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          to: recipient,
-          subject: name || "Email Template",
-          html,
-        }),
-      });
+  setSending(true);
+
+  try {
+    const formData = new FormData();
+    formData.append("to", recipient);
+    formData.append("subject", name || "Email Template");
+
+    let htmlWithCid = html;
+
+    usedImages.forEach((img, idx) => {
+      
+      const regex = new RegExp(`src=["'][^"']*${img.name}["']`, "g");
+      htmlWithCid = htmlWithCid.replace(regex, `src="cid:image${idx}@mcp"`);
+
+      //  Append actual image file
+      formData.append("images", img.file);
+    });
+
+    formData.append("html", htmlWithCid);
+
+    const res = await fetch("http://localhost:5004/api/send", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
 
     const result = await res.json();
     if (!res.ok) throw new Error(result.message || "Failed to send email");
