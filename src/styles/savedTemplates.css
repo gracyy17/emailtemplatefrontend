@@ -63,3 +63,13 @@
   display: block;
   margin-bottom: 6px;
 }
+
+.search-bar {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}

@@ -4,6 +4,8 @@ import "../styles/savedTemplates.css";
 
 const SavedTemplates = ({ token, onUseTemplate }) => {
   const [templates, setTemplates] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredTemplates, setFilteredTemplates] = useState([]);
 
   const fetchTemplates = async () => {
     const res = await fetch("http://localhost:5004/api/templates", {
@@ -14,8 +16,10 @@ const SavedTemplates = ({ token, onUseTemplate }) => {
     const data = await res.json();
     if (Array.isArray(data)) {
       setTemplates(data);
+      setFilteredTemplates(data);
     } else {
-      setTemplates([]); // fallback in case of bad response
+      setTemplates([]);
+      setFilteredTemplates([]);
     }
   };
 
@@ -33,29 +37,51 @@ const SavedTemplates = ({ token, onUseTemplate }) => {
     fetchTemplates();
   }, []);
 
+  useEffect(() => {
+    const filtered = templates.filter((tpl) =>
+      tpl.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredTemplates(filtered);
+  }, [searchQuery, templates]);
+
   return (
-    <div className="saved-templates-wrapper">
-      <h2>Saved Templates</h2>
+    <div className="center-wrapper">
+      <div className="saved-templates-wrapper">
+        <h2>Saved Templates</h2>
 
-      <div className="flex-table-header">
-        <div className="col-name">Name</div>
-        <div className="col-preview">Preview</div>
-        <div className="col-actions">Actions</div>
-      </div>
+        {/* Search Bar */}
+        <input
+          type="text"
+          placeholder="Search templates..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="search-bar"
+        />
 
-      {templates.map((tpl) => (
-        <div className="flex-table-row" key={tpl._id}>
-          <div className="col-name">{tpl.name}</div>
-          <div
-            className="col-preview saved-template-html"
-            dangerouslySetInnerHTML={{ __html: tpl.html }}
-          />
-          <div className="col-actions">
-            <button onClick={() => onUseTemplate?.(tpl)}>Reuse</button>
-            <button onClick={() => deleteTemplate(tpl._id)}>Delete</button>
-          </div>
+        <div className="flex-table-header">
+          <div className="col-name">Name</div>
+          <div className="col-preview">Preview</div>
+          <div className="col-actions">Actions</div>
         </div>
-      ))}
+
+        {filteredTemplates.map((tpl) => (
+          <div className="flex-table-row" key={tpl._id}>
+            <div className="col-name">{tpl.name}</div>
+            <div
+              className="col-preview saved-template-html"
+              dangerouslySetInnerHTML={{ __html: tpl.html }}
+            />
+            <div className="col-actions">
+              <button onClick={() => onUseTemplate?.(tpl)}>Reuse</button>
+              <button onClick={() => deleteTemplate(tpl._id)}>Delete</button>
+            </div>
+          </div>
+        ))}
+
+        {filteredTemplates.length === 0 && (
+          <div className="no-templates">No templates found.</div>
+        )}
+      </div>
     </div>
   );
 };

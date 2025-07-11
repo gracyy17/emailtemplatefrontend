@@ -1,3 +1,11 @@
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  color: #22223b;
+}
+
 .editor-container {
   border: 1px solid #ccc;
   padding: 16px;
@@ -6,11 +14,13 @@
   background: #fafafa;
 }
 
-.template-name {
-  width: 100%;
+.template-name,
+.subject-name {
   padding: 8px;
-  margin-bottom: 8px;
   font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
 }
 
 .toolbar {
@@ -28,21 +38,52 @@
 }
 
 .editor {
-  min-height: 150px;
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-top: 8px;
-  background: white;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
+.saved-templates-wrapper{
+    min-width: 300px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 1210px;
+    box-sizing: border-box;
+
+}
+.center-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Full height center */
+  background-color: #f5f5f5; /* Optional background */
+}
 .save-btn {
-  margin-top: 12px;
-  padding: 8px 16px;
-  background: #007bff;
+  width: 150px;        /* Adjust as needed */
+  height: 40px;        /* Adjust as needed */
+  padding: 8px 16px;   /* You can reduce this if height is fixed */
+  background: #1A73E8;
   color: white;
   border: none;
   cursor: pointer;
+  border-radius: 6px;  /* Optional for rounded corners */
+  font-size: 14px;     /* Adjust text size */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.save-btn:hover:enabled {
+  background-color: #1d4ed8;
+}
+
+.editor-quill-wrapper {
+  margin-bottom: 16px;
 }
 
 /* styles/templateEditor.css */
@@ -50,7 +91,10 @@
   position: relative;
   z-index: 0;
 }
-
+.ql-container {
+  min-height: 300px;
+  font-size: 1.1rem;
+}
 .editor-preview {
   margin-top: 16px;
   padding: 12px;
@@ -59,7 +103,10 @@
   background-color: #f9f9f9;
   z-index: 0;
 }
-
+.ql-editor{
+  font-size: 14px;
+  color:#000000;
+}
 .ql-editor img {
   max-width: 100%;
   max-height: 300px;
@@ -80,34 +127,148 @@
 
 .editor-wrapper {
   display: flex;
+  justify-content: center;
   gap: 24px;
-  align-items: flex-start;
-  flex-wrap: wrap; /* fallback for smaller screens */
-  margin-bottom: 24px;
+  flex-wrap: wrap; /* supports responsive stacking */
+  padding: 24px;
+}
+
+h1 {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 98%;
+  box-sizing: border-box;
+  font-size: 1.5rem;
+  color: #22223b;
+  margin-left: 15px;
+  
 }
 
 .editor-left,
 .editor-right {
   flex: 1;
   min-width: 300px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 650px;
+  box-sizing: border-box;
 }
-
 .editor-right {
-  padding: 12px;
-  border: 1px solid #ddd;
-  background-color: #fafafa;
-  border-radius: 8px;
+  padding: 10px 24px;
+  max-width: 550px;
+}
+.editor-section {
+  width: 100%;
+  margin-bottom: 24px;
 }
 
-/* Optional image size limits for both editor & preview */
-.ql-editor img,
-.editor-preview img {
-  max-width: 100%;
-  max-height: 300px;
-  height: auto;
-  display: block;
-  margin: 10px 0;
-  border-radius: 8px;
+.editor-section-title {
+    color: #22223b;
+}
+
+
+.editor-preview-section {
+  margin-bottom: 10px;
+}
+
+.editor-preview p {
+  font-size: 14px;
+  color: #000000;
+  margin: 0;
+  line-height: 1.5;
+}
+.editor-left h3 {
+  color: #22223b;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+.editor-preview h2{
+  margin-top: 0;
+}
+.editor-preview {
+  border: 1px solid #d1d5db;         
+  border-radius: 10px;                 
+  min-height: 200px;
+  padding: 20px;                        
+  background-color: #f9fafb;            
+  font-size: 1rem;
+  color: #1f2937;                      
+          
+  word-break: break-word;
+  white-space: normal;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);  
+}
+.editor-send-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center; /* Center vertically */
+  gap: 12px;
+}
+
+.editor-send-section input[type="email"] {
+  flex: 1;
+  min-width: 200px;
+}
+
+.editor-send-section .editor-send-btn {
+  height: 40px; /* Matches typical input height */
+  white-space: nowrap;
+  margin-top: 15px; /* Aligns with input field */
+}
+
+.editor-input {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.editor-input-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.input-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group label {
+  margin-top: 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.editor-send-btn {
+  background-color: #1A73E8;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 0;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-bottom: 8px;
+  width: 120px; 
+}
+
+.editor-send-btn:hover:enabled {
+  background-color: #1d4ed8;
 }
 
 .email-send-section {
@@ -116,6 +277,11 @@
   gap: 12px;
   margin-top: 16px;
 }
+
+
+
+
+
 
 .email-input {
   flex: 1;
